@@ -35,9 +35,15 @@ final class FilenameTest extends TestCase
 
     public function testInvalidLength(): void
     {
+        $string = str_repeat('a', 256);
         $this->expectException(LengthException::class);
         $this->expectExceptionCode(110);
-        new Filename(str_repeat('a', 256));
+        $this->expectExceptionMessage(
+            <<<PLAIN
+            String `{$string}` provided exceed the limit of `255` bytes
+            PLAIN
+        );
+        new Filename($string);
     }
 
     public function testWithExtension(): void
