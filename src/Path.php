@@ -13,16 +13,14 @@ declare(strict_types=1);
 
 namespace Chevere\Filesystem;
 
-use Chevere\Filesystem\Exceptions\FilesystemException;
 use Chevere\Filesystem\Exceptions\PathNotExistsException;
 use Chevere\Filesystem\Exceptions\PathUnableToChmodException;
 use Chevere\Filesystem\Interfaces\PathInterface;
-use Throwable;
 use function Chevere\Message\message;
-use function Safe\fclose;
-use function Safe\fopen;
-use function Safe\fwrite;
-use function Safe\unlink;
+use function fclose;
+use function fopen;
+use function fwrite;
+use function unlink;
 
 final class Path implements PathInterface
 {
@@ -104,18 +102,14 @@ final class Path implements PathInterface
         $testFile = sprintf('%s/%s.tmp', $this->absolute, uniqid('data_write_test_'));
 
         // @infection-ignore-all
-        try {
-            $handle = fopen($testFile, 'w');
-            if (! is_resource($handle) || fwrite($handle, 't') === 0) {
-                return false;
-            }
-            fclose($handle);
-            unlink($testFile);
-
-            return true;
-        } catch (Throwable $e) {
-            throw new FilesystemException(previous: $e);
+        $handle = fopen($testFile, 'w');
+        if (! is_resource($handle) || fwrite($handle, 't') === 0) {
+            return false;
         }
+        fclose($handle);
+        unlink($testFile);
+
+        return true;
         // @codeCoverageIgnoreEnd
     }
 

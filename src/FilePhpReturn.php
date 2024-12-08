@@ -56,6 +56,7 @@ final class FilePhpReturn implements FilePhpReturnInterface
     {
         $variable = $storable->variable();
         $export = $this->getFileReturnVariable($variable);
+        /** @var string $export */
         $this->filePhp->file()->put(
             self::PHP_RETURN . $export . ';'
         );

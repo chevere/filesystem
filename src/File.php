@@ -23,12 +23,11 @@ use Chevere\Filesystem\Exceptions\PathIsDirectoryException;
 use Chevere\Filesystem\Interfaces\FileInterface;
 use Chevere\Filesystem\Interfaces\PathInterface;
 use RuntimeException;
-use Throwable;
 use function Chevere\Message\message;
-use function Safe\file_get_contents;
-use function Safe\file_put_contents;
-use function Safe\filesize;
-use function Safe\unlink;
+use function file_get_contents;
+use function file_put_contents;
+use function filesize;
+use function unlink;
 
 final class File implements FileInterface
 {
@@ -89,8 +88,12 @@ final class File implements FileInterface
     public function getSize(): int
     {
         $this->assertExists();
+        $return = filesize($this->path->__toString());
+        if ($return === false) {
+            throw new RuntimeException();
+        }
 
-        return filesize($this->path->__toString());
+        return $return;
     }
 
     /**
@@ -100,13 +103,8 @@ final class File implements FileInterface
     public function getContents(): string
     {
         $this->assertExists();
-
-        try {
-            return file_get_contents($this->path->__toString());
-        }
-        // @codeCoverageIgnoreStart
-        // @infection-ignore-all
-        catch (Throwable $e) {
+        $return = file_get_contents($this->path->__toString());
+        if ($return === false) {
             throw new FileUnableToGetException(
                 (string) message(
                     'Unable to read the contents of the file at `%path%`',
@@ -114,7 +112,8 @@ final class File implements FileInterface
                 )
             );
         }
-        // @codeCoverageIgnoreEnd
+
+        return $return;
     }
 
     public function remove(): void
@@ -142,16 +141,10 @@ final class File implements FileInterface
             );
         }
         $this->createPath();
-
-        try {
-            file_put_contents($this->path->__toString(), '');
+        $puts = file_put_contents($this->path->__toString(), '');
+        if ($puts === false) {
+            throw new FileUnableToCreateException();
         }
-        // @codeCoverageIgnoreStart
-        // @infection-ignore-all
-        catch (Throwable $e) {
-            throw new FileUnableToCreateException(previous: $e);
-        }
-        // @codeCoverageIgnoreEnd
     }
 
     public function createIfNotExists(): void
@@ -165,13 +158,8 @@ final class File implements FileInterface
     public function put(string $contents): void
     {
         $this->assertExists();
-
-        try {
-            file_put_contents($this->path->__toString(), $contents);
-        }
-        // @codeCoverageIgnoreStart
-        // @infection-ignore-all
-        catch (Throwable) {
+        $puts = file_put_contents($this->path->__toString(), $contents);
+        if ($puts === false) {
             throw new FileUnableToPutException(
                 (string) message(
                     'Unable to write content to file `%filepath%`',
@@ -179,7 +167,6 @@ final class File implements FileInterface
                 )
             );
         }
-        // @codeCoverageIgnoreEnd
     }
 
     private function createPath(): void
@@ -205,14 +192,9 @@ final class File implements FileInterface
 
     private function assertUnlink(): void
     {
-        try {
-            unlink($this->path->__toString());
+        $unlink = unlink($this->path->__toString());
+        if ($unlink === false) {
+            throw new FileUnableToRemoveException();
         }
-        // @codeCoverageIgnoreStart
-        // @infection-ignore-all
-        catch (Throwable $e) {
-            throw new FileUnableToRemoveException(previous: $e);
-        }
-        // @codeCoverageIgnoreEnd
     }
 }

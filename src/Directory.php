@@ -25,10 +25,9 @@ use Chevere\Filesystem\Interfaces\PathInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
-use Throwable;
 use function Chevere\Message\message;
-use function Safe\mkdir;
-use function Safe\rmdir;
+use function mkdir;
+use function rmdir;
 
 final class Directory implements DirectoryInterface
 {
@@ -180,10 +179,8 @@ final class Directory implements DirectoryInterface
      */
     private function assertCreate(int $mode = 0755): void
     {
-        try {
-            mkdir($this->path->__toString(), $mode, true);
-        } catch (Throwable $e) {
-            throw new DirectoryUnableToCreateException(previous: $e);
+        if (mkdir($this->path->__toString(), $mode, true) === false) {
+            throw new DirectoryUnableToCreateException();
         }
     }
 
@@ -193,10 +190,8 @@ final class Directory implements DirectoryInterface
      */
     private function rmdir(): void
     {
-        try {
-            rmdir($this->path->__toString());
-        } catch (Throwable $e) {
-            throw new DirectoryUnableToRemoveException(previous: $e);
+        if (rmdir($this->path->__toString()) === false) {
+            throw new DirectoryUnableToRemoveException();
         }
     }
 }
