@@ -18,6 +18,7 @@ use Chevere\Filesystem\Interfaces\DirectoryInterface;
 use Chevere\Filesystem\Interfaces\FileInterface;
 use Chevere\Filesystem\Interfaces\FilePhpInterface;
 use Chevere\Filesystem\Interfaces\FilePhpReturnInterface;
+use Chevere\Filesystem\Interfaces\PathInterface;
 use RecursiveDirectoryIterator;
 
 /**
@@ -34,8 +35,11 @@ function getFilesystemInstanceMessage(string $instance, string $path): string
     );
 }
 
-function tailDirectoryPath(string $path): string
+function tailDirectoryPath(string|PathInterface $path): string
 {
+    if ($path instanceof PathInterface) {
+        $path = $path->__toString();
+    }
     if (substr($path, -1) === '\\') {
         $path = substr($path, 0, -1);
     }
@@ -49,7 +53,7 @@ function tailDirectoryPath(string $path): string
 /**
  * @codeCoverageIgnore
  */
-function directoryForPath(string $path): DirectoryInterface
+function directoryForPath(string|PathInterface $path): DirectoryInterface
 {
     $path = tailDirectoryPath($path);
 
@@ -59,16 +63,20 @@ function directoryForPath(string $path): DirectoryInterface
 /**
  * @codeCoverageIgnore
  */
-function fileForPath(string $path): FileInterface
+function fileForPath(string|PathInterface $path): FileInterface
 {
-    return new File(new Path($path));
+    return new File(
+        $path instanceof PathInterface
+            ? $path
+            : new Path($path)
+    );
 }
 
 /**
  * @codeCoverageIgnore
  * @throws FilesystemException
  */
-function filePhpForPath(string $path): FilePhpInterface
+function filePhpForPath(string|PathInterface $path): FilePhpInterface
 {
     return new FilePhp(fileForPath($path));
 }
@@ -77,7 +85,7 @@ function filePhpForPath(string $path): FilePhpInterface
  * @codeCoverageIgnore
  * @throws FilesystemException
  */
-function filePhpReturnForPath(string $path): FilePhpReturnInterface
+function filePhpReturnForPath(string|PathInterface $path): FilePhpReturnInterface
 {
     return new FilePhpReturn(filePhpForPath($path));
 }
