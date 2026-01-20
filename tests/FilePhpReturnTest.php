@@ -144,7 +144,7 @@ final class FilePhpReturnTest extends TestCase
             $storable = new StorableVariable($value);
             $this->filePhpReturn->put($storable);
             $this->assertSame($value, $this->filePhpReturn->get());
-            $this->assertSame($value, $this->filePhpReturn->cast()->{$type}());
+            $this->assertSame($value, $this->filePhpReturn->typed()->{$type}());
         }
         $object = $this->testDirectory->path()->getChild('test');
         $types = [
@@ -156,7 +156,7 @@ final class FilePhpReturnTest extends TestCase
             $this->filePhpReturn->put($storable);
             $this->assertNotSame($value, $this->filePhpReturn->get());
             $this->assertEquals($value, $this->filePhpReturn->get());
-            $this->assertEquals($value, $this->filePhpReturn->cast()->{$type}());
+            $this->assertEquals($value, $this->filePhpReturn->typed()->{$type}());
         }
     }
 

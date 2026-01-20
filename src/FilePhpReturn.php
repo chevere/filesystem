@@ -19,11 +19,11 @@ use Chevere\Filesystem\Exceptions\FileUnableToGetException;
 use Chevere\Filesystem\Exceptions\FileWithoutContentsException;
 use Chevere\Filesystem\Interfaces\FilePhpInterface;
 use Chevere\Filesystem\Interfaces\FilePhpReturnInterface;
-use Chevere\Parameter\Interfaces\CastInterface;
+use Chevere\Parameter\Interfaces\TypedInterface;
 use Chevere\VarSupport\Interfaces\StorableVariableInterface;
 use Chevere\VarSupport\StorableVariable;
 use function Chevere\Message\message;
-use function Chevere\Parameter\cast;
+use function Chevere\Parameter\typed;
 
 final class FilePhpReturn implements FilePhpReturnInterface
 {
@@ -45,9 +45,9 @@ final class FilePhpReturn implements FilePhpReturnInterface
         return require $filePath;
     }
 
-    public function cast(): CastInterface
+    public function typed(): TypedInterface
     {
-        return cast(
+        return typed(
             $this->get()
         );
     }
