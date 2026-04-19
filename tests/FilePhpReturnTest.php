@@ -50,6 +50,7 @@ final class FilePhpReturnTest extends TestCase
 
     protected function tearDown(): void
     {
+        $this->file->removeIfExists();
         $this->testDirectory->removeIfExists();
     }
 
@@ -107,13 +108,6 @@ final class FilePhpReturnTest extends TestCase
     {
         $this->file->put(FilePhpReturnInterface::PHP_RETURN . '["test", 1];');
         $this->assertSame(['test', 1], $this->filePhpReturn->get());
-    }
-
-    public function testPutFileNotFound(): void
-    {
-        $this->file->remove();
-        $this->expectException(FileNotExistsException::class);
-        $this->filePhpReturn->put(new StorableVariable('test'));
     }
 
     public function testPhpReturnStringFile(): void

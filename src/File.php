@@ -157,7 +157,7 @@ final class File implements FileInterface
 
     public function put(string $contents): void
     {
-        $this->assertExists();
+        $this->createIfNotExists();
         $puts = file_put_contents($this->path->__toString(), $contents);
         if ($puts === false) {
             throw new FileUnableToPutException(

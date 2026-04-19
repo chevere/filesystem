@@ -53,13 +53,15 @@ final class FileTest extends TestCase
 
     public function testWithNonExistentPath(): void
     {
-        $path = $this->testDirectory->path();
+        $path = $this->testDirectory->path()->getChild('test.txt');
         $file = new File($path);
         $this->assertSame($path, $file->path());
         $this->assertFalse($file->exists());
         $this->assertFalse($file->isPhp());
-        $this->expectException(FileNotExistsException::class);
         $file->put('test');
+        $this->assertTrue($file->exists());
+        $this->assertSame('test', $file->getContents());
+        $file->remove();
     }
 
     public function testWithExistentPath(): void

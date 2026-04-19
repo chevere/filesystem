@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Chevere\Tests;
 
+use Chevere\Filesystem\Directory;
 use Chevere\Filesystem\Exceptions\FileNotExistsException;
 use Chevere\Filesystem\Exceptions\FileNotPhpException;
 use Chevere\Filesystem\File;
@@ -28,6 +29,11 @@ final class FilePhpTest extends TestCase
     protected function setUp(): void
     {
         $this->path = new Path(__DIR__ . '/src/FilePhpTest/');
+    }
+
+    protected function tearDown(): void
+    {
+        (new Directory($this->path))->removeIfExists();
     }
 
     public function testNotPhpFile(): void
