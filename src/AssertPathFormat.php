@@ -19,7 +19,6 @@ use Chevere\Filesystem\Exceptions\PathExtraSlashesException;
 use Chevere\Filesystem\Exceptions\PathNotAbsoluteException;
 use Chevere\Filesystem\Interfaces\AssertPathFormatInterface;
 use Chevere\Regex\Regex;
-use function Chevere\Message\message;
 
 final class AssertPathFormat implements AssertPathFormatInterface
 {
@@ -60,10 +59,10 @@ final class AssertPathFormat implements AssertPathFormatInterface
     {
         if ($this->drive === '' && ! str_starts_with($this->path, '/')) {
             throw new PathNotAbsoluteException(
-                (string) message(
-                    'Path `%path%` must start with `%char%`',
-                    path: $this->path,
-                    char: '/'
+                sprintf(
+                    'Path `%s` must start with `%s`',
+                    $this->path,
+                    '/'
                 )
             );
         }
@@ -73,10 +72,10 @@ final class AssertPathFormat implements AssertPathFormatInterface
     {
         if (strpos($this->path, '../') !== false) {
             throw new PathDoubleDotsDashException(
-                (string) message(
-                    'Must omit `%chars%` for path `%path%`',
-                    chars: '../',
-                    path: $this->path
+                sprintf(
+                    'Must omit `%s` for path `%s`',
+                    '../',
+                    $this->path
                 )
             );
         }
@@ -86,10 +85,10 @@ final class AssertPathFormat implements AssertPathFormatInterface
     {
         if (strpos($this->path, './') !== false) {
             throw new PathDotSlashException(
-                (string) message(
-                    'Must omit %chars% for path %path%',
-                    chars: './',
-                    path: $this->path
+                sprintf(
+                    'Must omit %s for path %s',
+                    './',
+                    $this->path
                 )
             );
         }
@@ -99,9 +98,9 @@ final class AssertPathFormat implements AssertPathFormatInterface
     {
         if (strpos($this->path, '//') !== false) {
             throw new PathExtraSlashesException(
-                (string) message(
-                    'Path `%path%` contains extra-slashes',
-                    path: $this->path
+                sprintf(
+                    'Path `%s` contains extra-slashes',
+                    $this->path
                 )
             );
         }

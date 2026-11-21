@@ -16,7 +16,6 @@ namespace Chevere\Filesystem;
 use Chevere\Filesystem\Exceptions\PathNotExistsException;
 use Chevere\Filesystem\Exceptions\PathUnableToChmodException;
 use Chevere\Filesystem\Interfaces\PathInterface;
-use function Chevere\Message\message;
 use function fclose;
 use function fopen;
 use function fwrite;
@@ -50,9 +49,9 @@ final class Path implements PathInterface
     {
         if (! $this->exists()) {
             throw new PathNotExistsException(
-                (string) message(
-                    "Path `%path%` doesn't exists",
-                    path: $this->absolute
+                sprintf(
+                    "Path `%s` doesn't exists",
+                    $this->absolute
                 )
             );
         }
@@ -83,10 +82,10 @@ final class Path implements PathInterface
         $this->assertExists();
         if (! chmod($this->absolute, $mode)) {
             throw new PathUnableToChmodException(
-                (string) message(
-                    'Unable to chmod **%mode%** `%path%`',
-                    mode: (string) $mode,
-                    path: $this->absolute
+                sprintf(
+                    'Unable to chmod **%d** `%s`',
+                    $mode,
+                    $this->absolute
                 )
             );
         }

@@ -25,7 +25,6 @@ use Chevere\Filesystem\Interfaces\PathInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
-use function Chevere\Message\message;
 use function mkdir;
 use function rmdir;
 
@@ -57,9 +56,9 @@ final class Directory implements DirectoryInterface
     {
         if (! $this->exists()) {
             throw new DirectoryNotExistsException(
-                (string) message(
-                    "Directory %path% doesn't exists",
-                    path: $this->path->__toString()
+                sprintf(
+                    "Directory %s doesn't exists",
+                    $this->path->__toString()
                 )
             );
         }
@@ -70,9 +69,9 @@ final class Directory implements DirectoryInterface
     {
         if ($this->exists()) {
             throw new DirectoryExistsException(
-                (string) message(
-                    'Directory `%path%` already exists',
-                    path: $this->path->__toString()
+                sprintf(
+                    'Directory `%s` already exists',
+                    $this->path->__toString()
                 )
             );
         }
@@ -138,9 +137,9 @@ final class Directory implements DirectoryInterface
     {
         if ($this->path->isFile()) {
             throw new PathIsFileException(
-                (string) message(
-                    'Path `%path%` is a file',
-                    path: $this->path->__toString()
+                sprintf(
+                    'Path `%s` is a file',
+                    $this->path->__toString()
                 )
             );
         }
@@ -151,11 +150,11 @@ final class Directory implements DirectoryInterface
         $absolute = $this->path->__toString();
         if ($absolute[-1] !== '/') {
             throw new PathTailException(
-                (string) message(
-                    'Instance of `%className%` must provide an absolute path ending with `%tailChar%` path `%provided%` provided',
-                    className: $this->path::class,
-                    tailChar: '/',
-                    provided: $absolute
+                sprintf(
+                    'Instance of `%s` must provide an absolute path ending with `%s` path `%s` provided',
+                    $this->path::class,
+                    '/',
+                    $absolute
                 )
             );
         }
@@ -165,9 +164,9 @@ final class Directory implements DirectoryInterface
     {
         if (! $this->path->isDirectory()) {
             throw new PathIsNotDirectoryException(
-                (string) message(
-                    'Path `%path%` is not a directory',
-                    path: $this->path->__toString()
+                sprintf(
+                    'Path `%s` is not a directory',
+                    $this->path->__toString()
                 )
             );
         }

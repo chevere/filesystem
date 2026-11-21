@@ -21,7 +21,6 @@ use Chevere\Filesystem\Interfaces\FilePhpInterface;
 use Chevere\Filesystem\Interfaces\FilePhpReturnInterface;
 use Chevere\VarSupport\Interfaces\StorableVariableInterface;
 use Chevere\VarSupport\StorableVariable;
-use function Chevere\Message\message;
 
 final class FilePhpReturn implements FilePhpReturnInterface
 {
@@ -64,17 +63,17 @@ final class FilePhpReturn implements FilePhpReturnInterface
         $contents = $this->filePhp->file()->getContents();
         if ($contents === '' || ctype_space($contents)) {
             throw new FileWithoutContentsException(
-                (string) message(
-                    "The file at `%path%` doesn't have any contents",
-                    path: $this->filePhp->file()->path()->__toString()
+                sprintf(
+                    "The file at `%s` doesn't have any contents",
+                    $this->filePhp->file()->path()->__toString()
                 )
             );
         }
         if (preg_match('#^<\?php[\S\s]*return[\S\s]*;$#', $contents) !== 1) {
             throw new FileInvalidContentsException(
-                (string) message(
-                    'Unexpected contents in `%path%`',
-                    path: $this->filePhp->file()->path()->__toString()
+                sprintf(
+                    'Unexpected contents in `%s`',
+                    $this->filePhp->file()->path()->__toString()
                 )
             );
         }

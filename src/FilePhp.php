@@ -18,7 +18,6 @@ use Chevere\Filesystem\Interfaces\FileInterface;
 use Chevere\Filesystem\Interfaces\FilePhpInterface;
 use RangeException;
 use RuntimeException;
-use function Chevere\Message\message;
 
 final class FilePhp implements FilePhpInterface
 {
@@ -47,7 +46,7 @@ final class FilePhp implements FilePhpInterface
         touch($path, $past);
         if (opcache_get_status() === false) {
             throw new RangeException(
-                (string) message('%s% is not enabled', s: 'OPcache')
+                sprintf('%s is not enabled', 'OPcache')
             );
         }
         opcache_compile_file($path);
@@ -64,7 +63,7 @@ final class FilePhp implements FilePhpInterface
         }
         if (! opcache_invalidate($this->file->path()->__toString())) {
             throw new RuntimeException(
-                (string) message('%s% is not enabled', s: 'OPcache')
+                sprintf('%s is not enabled', 'OPcache')
             );
         }
     }
@@ -73,10 +72,10 @@ final class FilePhp implements FilePhpInterface
     {
         if (! $this->file->isPhp()) {
             throw new FileNotPhpException(
-                (string) message(
-                    'Instance of `%className%` must represents a PHP script in the path `%path%`',
-                    className: $this->file::class,
-                    path: $this->file->path()->__toString()
+                sprintf(
+                    'Instance of `%s` must represents a PHP script in the path `%s`',
+                    $this->file::class,
+                    $this->file->path()->__toString()
                 )
             );
         }

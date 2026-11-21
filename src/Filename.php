@@ -16,7 +16,6 @@ namespace Chevere\Filesystem;
 use Chevere\Filesystem\Interfaces\FilenameInterface;
 use InvalidArgumentException;
 use LengthException;
-use function Chevere\Message\message;
 
 final class Filename implements FilenameInterface
 {
@@ -55,10 +54,10 @@ final class Filename implements FilenameInterface
         if (strlen($this->filename) <= self::MAX_LENGTH_BYTES) {
             return;
         }
-        $message = (string) message(
-            'String `%string%` provided exceed the limit of `%bytes%` bytes',
-            string: $this->filename,
-            bytes: self::MAX_LENGTH_BYTES,
+        $message = sprintf(
+            'String `%s` provided exceed the limit of `%d` bytes',
+            $this->filename,
+            self::MAX_LENGTH_BYTES,
         );
 
         throw new LengthException($message, 110);

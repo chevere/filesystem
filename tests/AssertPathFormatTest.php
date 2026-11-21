@@ -18,6 +18,7 @@ use Chevere\Filesystem\Exceptions\PathDotSlashException;
 use Chevere\Filesystem\Exceptions\PathDoubleDotsDashException;
 use Chevere\Filesystem\Exceptions\PathExtraSlashesException;
 use Chevere\Filesystem\Exceptions\PathNotAbsoluteException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class AssertPathFormatTest extends TestCase
@@ -46,7 +47,7 @@ final class AssertPathFormatTest extends TestCase
         new AssertPathFormat('/some/../dir');
     }
 
-    public function dataUnix(): array
+    public static function dataUnix(): array
     {
         return [
             [
@@ -61,9 +62,7 @@ final class AssertPathFormatTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataUnix
-     */
+    #[DataProvider('dataUnix')]
     public function testUnix(string $path, string $expected): void
     {
         $assert = new AssertPathFormat($path);
@@ -71,7 +70,7 @@ final class AssertPathFormatTest extends TestCase
         $this->assertSame('', $assert->drive());
     }
 
-    public function dataWindows(): array
+    public static function dataWindows(): array
     {
         return [
             [
@@ -89,9 +88,7 @@ final class AssertPathFormatTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataWindows
-     */
+    #[DataProvider('dataWindows')]
     public function testWindows(string $path, string $expected): void
     {
         $assert = new AssertPathFormat($path);
@@ -99,7 +96,7 @@ final class AssertPathFormatTest extends TestCase
         $this->assertSame('', $assert->drive());
     }
 
-    public function dataWindowsDriveLetters(): array
+    public static function dataWindowsDriveLetters(): array
     {
         return [
             [
@@ -117,9 +114,7 @@ final class AssertPathFormatTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataWindowsDriveLetters
-     */
+    #[DataProvider('dataWindowsDriveLetters')]
     public function testWindowsDriveLetters(string $path, string $expected): void
     {
         $assert = new AssertPathFormat($path);
@@ -128,7 +123,7 @@ final class AssertPathFormatTest extends TestCase
         $this->assertSame($letter, $assert->drive());
     }
 
-    public function dataDrivePaths(): array
+    public static function dataDrivePaths(): array
     {
         return [
             // [
@@ -141,9 +136,7 @@ final class AssertPathFormatTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataDrivePaths
-     */
+    #[DataProvider('dataDrivePaths')]
     public function testDrivePaths(string $path, string $drive): void
     {
         $assert = new AssertPathFormat($path);

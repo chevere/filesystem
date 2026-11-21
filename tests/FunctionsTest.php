@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Chevere\Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use function Chevere\Filesystem\directoryForPath;
 use function Chevere\Filesystem\resolvePath;
 use function Chevere\Filesystem\tailDirectoryPath;
@@ -55,7 +56,7 @@ final class FunctionsTest extends TestCase
         }
     }
 
-    public function dataProviderResolvePath(): array
+    public static function dataProviderResolvePath(): array
     {
         return [
             [
@@ -91,9 +92,7 @@ final class FunctionsTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataProviderResolvePath
-     */
+    #[DataProvider('dataProviderResolvePath')]
     public function testResolvePath(string $argument, string $expected): void
     {
         $this->assertSame(

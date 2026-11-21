@@ -23,7 +23,6 @@ use Chevere\Filesystem\Exceptions\PathIsDirectoryException;
 use Chevere\Filesystem\Interfaces\FileInterface;
 use Chevere\Filesystem\Interfaces\PathInterface;
 use RuntimeException;
-use function Chevere\Message\message;
 use function file_get_contents;
 use function file_put_contents;
 use function filesize;
@@ -59,9 +58,9 @@ final class File implements FileInterface
     {
         if (! $this->exists()) {
             throw new FileNotExistsException(
-                (string) message(
-                    "File `%path%` doesn't exists",
-                    path: $this->path->__toString()
+                sprintf(
+                    "File `%s` doesn't exists",
+                    $this->path->__toString()
                 )
             );
         }
@@ -74,12 +73,13 @@ final class File implements FileInterface
         if (is_string($hashFile)) {
             return $hashFile;
         }
+
         // @codeCoverageIgnoreStart
         // @infection-ignore-all
         throw new RuntimeException(
-            (string) message(
-                'Unable to get checksum for file `%path%`',
-                path: $this->path->__toString()
+            sprintf(
+                'Unable to get checksum for file `%s`',
+                $this->path->__toString()
             )
         );
         // @codeCoverageIgnoreEnd
@@ -106,9 +106,9 @@ final class File implements FileInterface
         $return = file_get_contents($this->path->__toString());
         if ($return === false) {
             throw new FileUnableToGetException(
-                (string) message(
-                    'Unable to read the contents of the file at `%path%`',
-                    path: $this->path->__toString()
+                sprintf(
+                    'Unable to read the contents of the file at `%s`',
+                    $this->path->__toString()
                 )
             );
         }
@@ -134,9 +134,9 @@ final class File implements FileInterface
     {
         if ($this->path->exists()) {
             throw new PathExistsException(
-                (string) message(
-                    'Unable to create file `%path%` (file already exists)',
-                    path: $this->path->__toString()
+                sprintf(
+                    'Unable to create file `%s` (file already exists)',
+                    $this->path->__toString()
                 )
             );
         }
@@ -161,9 +161,9 @@ final class File implements FileInterface
         $puts = file_put_contents($this->path->__toString(), $contents);
         if ($puts === false) {
             throw new FileUnableToPutException(
-                (string) message(
-                    'Unable to write content to file `%filepath%`',
-                    filepath: $this->path->__toString()
+                sprintf(
+                    'Unable to write content to file `%s`',
+                    $this->path->__toString()
                 )
             );
         }
@@ -182,9 +182,9 @@ final class File implements FileInterface
     {
         if ($this->path->isDirectory()) {
             throw new PathIsDirectoryException(
-                (string) message(
-                    'Path `%path%` is a directory',
-                    path: $this->path->__toString()
+                sprintf(
+                    'Path `%s` is a directory',
+                    $this->path->__toString()
                 )
             );
         }
